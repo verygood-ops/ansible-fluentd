@@ -16,7 +16,9 @@
 #  rpm_key: key=https://packages.treasuredata.com/GPG-KEY-td-agent validate_certs=no state=present
 
 - name: add official repository
-  copy: src=../files/td.repo dest=/etc/yum.repos.d/td.repo
+  template:
+    src: td.repo.j2
+    dest: /etc/yum.repos.d/td.repo
 
 - name: install td-agent
   yum: name=td-agent  update_cache=yes  state=present
