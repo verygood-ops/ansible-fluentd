@@ -12,7 +12,7 @@
   with_items:
     - python-software-properties
     - apt-transport-https
-  
+
   # apt_key stops working
 - name: add APT signing key for td-agent
   shell: curl https://packages.treasuredata.com/GPG-KEY-td-agent | apt-key add -
@@ -29,16 +29,12 @@
   apt: name="td-agent={{ tdagent_version }}*"  update_cache=yes  state=present force=yes
   when: tdagent_version is defined
 
-
-
 - name: install libcurl and make for compiling plugins
   apt: name={{ item }}  state=present update_cache=yes
   with_items:
     - libcurl4-gnutls-dev
     - build-essential
   when: tdagent_plugins is defined or tdagent_plugins_versions is defined
-
-
 
 - name: set INIT status and start
   service: name=td-agent state=started enabled=yes
