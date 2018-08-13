@@ -94,6 +94,8 @@
       user_install: no
   with_dict: "{{ tdagent_plugins_versions | default({}) }}"
 
+# https://app.clubhouse.io/vgs/story/8889/checksum-failed-errors-when-using-sqs-output-plugin
+# https://groups.google.com/forum/#!topic/logstash-users/PXAPD0JntyU
 - name: disable sqs checksum check if sqs plugin present
   shell: 'sed -i "s/true,/false,/" /opt/td-agent/embedded/lib/ruby/gems/2.1.0/gems/aws-sdk-v1-*/lib/aws/sqs/config.rb'
   with_dict: "{{ tdagent_plugins_versions | default({}) }}"
