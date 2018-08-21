@@ -15,10 +15,12 @@
   command: rpm --import https://packages.treasuredata.com/GPG-KEY-td-agent
 #  rpm_key: key=https://packages.treasuredata.com/GPG-KEY-td-agent validate_certs=no state=present
 
+  # not working on amz-linux 2018.03
 - name: add official repository
   template:
     src: td.repo.j2
     dest: /etc/yum.repos.d/td.repo
+  when: ansible_distribution_version is not '2018.03'
 
 - name: install td-agent
   yum: name=td-agent  update_cache=yes  state=present
