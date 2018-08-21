@@ -12,19 +12,3 @@
     name: http://packages.treasuredata.com.s3.amazonaws.com/2/redhat/2017.09/x86_64/td-agent-2.3.6-0.el2017.x86_64.rpm
     state: present
   when: ansible_distribution_version == '2018.03'
-
-- name: install gcc and libcurlXXX for compiling plugins
-  yum: name={{ item }} state=present
-  with_items:
-    - gcc
-    - libcurl
-    - libcurl-devel
-  when: tdagent_plugins is defined or tdagent_plugins_versions is defined
-
-- name: set INIT status and start
-  service: name=td-agent state=started enabled=yes
-  when: tdagent_use_service|bool
-
-- name: set INIT status (SysV style)
-  command: /sbin/chkconfig td-agent on
-  when: not tdagent_use_service|bool
