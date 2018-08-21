@@ -1,6 +1,6 @@
 ---
 
-tdagent_major_version: 2
+tdagent_major_version: 3
 
 # cleanup old plugins and configs
 tdagent_do_cleanup_old: yes
