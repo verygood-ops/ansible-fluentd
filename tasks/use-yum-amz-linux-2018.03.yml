@@ -1,0 +1,14 @@
+---
+#
+# Configure td-agent from old RPM
+#
+
+- name: install required redhat-lsb-4.0
+  yum: name="redhat-lsb-4.0" update_cache=yes state=present
+  when: ansible_distribution_version == '2018.03'
+
+- name: install td-agent from old rpm
+  yum:
+    name: http://packages.treasuredata.com.s3.amazonaws.com/2/redhat/2017.09/x86_64/td-agent-2.3.6-0.el2017.x86_64.rpm
+    state: present
+  when: ansible_distribution_version == '2018.03'
