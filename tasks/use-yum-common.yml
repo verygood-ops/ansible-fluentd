@@ -1,5 +1,4 @@
 ---
-# file: tasks/use-yum.yml
 #
 # Configure td-agent from YUM repository.
 #

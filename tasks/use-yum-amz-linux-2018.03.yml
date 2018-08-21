@@ -1,7 +1,6 @@
 ---
-# file: tasks/use-yum.yml
 #
-# Configure td-agent from RPM repository.
+# Configure td-agent from old RPM
 #
 
 - name: install required redhat-lsb-4.0
