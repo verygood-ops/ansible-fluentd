@@ -3,7 +3,6 @@
 set -e
 
 # stop
-service monit stop
 service td-agent stop
 sleep 5
 
@@ -23,5 +22,3 @@ sleep 5
 
 # check dup process issue
 ! grep "Address already in use" /var/log/td-agent/td-agent.log
-
-service monit start
