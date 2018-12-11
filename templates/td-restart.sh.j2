@@ -2,23 +2,5 @@
 # Restart td-agent the hard way
 set -e
 
-# stop
-service td-agent stop
-sleep 5
-
-# make sure it stopped
-for try in `seq 1 3`;
-do
-  ps aux | grep td-agent | cut -d' ' -f2 | xargs -r kill -9
-  sleep 1
-done
-
-# Truncate log before start
-/usr/sbin/logrotate -f /etc/logrotate.d/td-agent
-
-# start
-service td-agent start
-sleep 5
-
-# check dup process issue
-! grep "Address already in use" /var/log/td-agent/td-agent.log
+/bin/td-stop.sh
+/bin/td-start.sh
