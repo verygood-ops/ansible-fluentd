@@ -69,8 +69,12 @@
     group: td-agent
   with_dict: '{{ tdagent_conf_others | default({}) }}'
 
-- name: copy td-restart script
-  template: src=td-restart.sh.j2 dest=/bin/td-restart.sh owner=root group=root mode=0744
+- name: copy td-restart scripts
+  template: src={{ item }}.sh.j2 dest=/bin/{{ item }}.sh owner=root group=root mode=0744
+  with_items:
+    - td-start
+    - td-stop
+    - td-restart
 
 - name: log rotation
   template: src=logrotate.j2 dest=/etc/logrotate.d/td-agent owner=root group=root mode=0644
