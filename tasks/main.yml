@@ -74,7 +74,6 @@
   with_items:
     - td-start
     - td-stop
-    - td-restart
 
 - name: log rotation
   template: src=logrotate.j2 dest=/etc/logrotate.d/td-agent owner=root group=root mode=0644
@@ -106,5 +105,5 @@
   when: item.value.name == 'fluent-plugin-sqs'
 
 - name: set INIT status and start
-  service: name=td-agent state=started enabled=yes
+  service: name=td-agent enabled=yes
   when: tdagent_use_service|bool
