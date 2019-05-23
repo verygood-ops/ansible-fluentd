@@ -74,7 +74,6 @@
   with_items:
     - td-start
     - td-stop
-    - td-restart
 
 - name: log rotation
   template: src=logrotate.j2 dest=/etc/logrotate.d/td-agent owner=root group=root mode=0644
@@ -83,19 +82,19 @@
 #   /opt/td-agent/embedded/lib/ruby/gems/2.1.0/gems/
 - name: install plugins, if any
   gem:
-      name: "{{ item }}"
-      executable: /opt/td-agent/embedded/bin/fluent-gem
-      state: latest
-      user_install: no
+    name: "{{ item }}"
+    executable: /opt/td-agent/embedded/bin/fluent-gem
+    state: latest
+    user_install: no
   with_items: "{{ tdagent_plugins | default([]) }}"
 
 - name: install plugins with specified versions, if any
   gem:
-      name: "{{ item.value.name }}"
-      executable: /opt/td-agent/embedded/bin/fluent-gem
-      state: present
-      version: "{{ item.value.version }}"
-      user_install: no
+    name: "{{ item.value.name }}"
+    executable: /opt/td-agent/embedded/bin/fluent-gem
+    state: present
+    version: "{{ item.value.version }}"
+    user_install: no
   with_dict: "{{ tdagent_plugins_versions | default({}) }}"
 
 # https://app.clubhouse.io/vgs/story/8889/checksum-failed-errors-when-using-sqs-output-plugin
@@ -106,5 +105,5 @@
   when: item.value.name == 'fluent-plugin-sqs'
 
 - name: set INIT status and start
-  service: name=td-agent state=started enabled=yes
+  service: name=td-agent enabled=yes
   when: tdagent_use_service|bool

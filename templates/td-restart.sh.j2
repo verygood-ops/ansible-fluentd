@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# Restart td-agent the hard way
-set -e
-
-service monit stop
-/bin/td-stop.sh
-/bin/td-start.sh
-service monit start
