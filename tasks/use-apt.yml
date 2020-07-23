@@ -7,11 +7,12 @@
 # @see http://toolbelt.treasuredata.com/sh/install-ubuntu-trusty-td-agent2.sh
 #
 
-- name: install apt-related binaries for Ansible to work
-  apt: name={{ item }}  state=present update_cache=yes
-  with_items:
-    - python-software-properties
-    - apt-transport-https
+# moved to AMI
+# - name: install apt-related binaries for Ansible to work
+#   apt: name={{ item }}  state=present update_cache=yes
+#   with_items:
+#     - python-software-properties
+#     - apt-transport-https
 
   # apt_key stops working
 - name: add APT signing key for td-agent
@@ -19,7 +20,6 @@
 
 - name: add td-agent repository
   apt_repository: repo='deb https://packages.treasuredata.com/{{ tdagent_major_version }}/{{ ansible_distribution|lower }}/{{ ansible_distribution_release|lower }}/ {{ ansible_distribution_release|lower }} contrib' state=present
-
 
 - name: install td-agent
   apt: name=td-agent  update_cache=yes  state=present force=yes
