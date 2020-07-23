@@ -2,5 +2,11 @@
 
 - hosts: all
   become: yes
+  pre_tasks:
+    - name: install apt-related binaries for Ansible to work
+      apt: name={{ item }}  state=present update_cache=yes
+      with_items:
+        - python-software-properties
+        - apt-transport-https
   roles:
-    - project 
+    - project
