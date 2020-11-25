@@ -20,10 +20,6 @@
   include: use-apt.yml
   when: ansible_pkg_mgr == "apt"
 
-- name: delegate to YUM system for installation
-  include: use-yum.yml
-  when: ansible_pkg_mgr == "yum"
-
 - name: mkdir for conf.d
   file:
     path: "{{item}}"
