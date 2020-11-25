@@ -6,20 +6,13 @@
 # @see http://docs.fluentd.org/articles/install-by-deb
 # @see http://toolbelt.treasuredata.com/sh/install-ubuntu-trusty-td-agent2.sh
 #
-
-# moved to AMI
-# - name: install apt-related binaries for Ansible to work
-#   apt: name={{ item }}  state=present update_cache=yes
-#   with_items:
-#     - python-software-properties
-#     - apt-transport-https
-
   # apt_key stops working
 - name: add APT signing key for td-agent
   shell: curl https://packages.treasuredata.com/GPG-KEY-td-agent | apt-key add -
 
+  # using xenial since we don't have package for focal
 - name: add td-agent repository
-  apt_repository: repo='deb https://packages.treasuredata.com/{{ tdagent_major_version }}/{{ ansible_distribution|lower }}/{{ ansible_distribution_release|lower }}/ {{ ansible_distribution_release|lower }} contrib' state=present
+  apt_repository: repo='deb http://packages.treasuredata.com/2.5/ubuntu/xenial/ xenial contrib' state=present
 
 - name: install td-agent
   apt: name=td-agent  update_cache=yes  state=present force=yes
@@ -28,13 +21,6 @@
 - name: install td-agent
   apt: name="td-agent={{ tdagent_version }}*"  update_cache=yes  state=present force=yes
   when: tdagent_version is defined
-
-- name: install libcurl and make for compiling plugins
-  apt: name={{ item }}  state=present update_cache=yes
-  with_items:
-    - libcurl4-gnutls-dev
-    - build-essential
-  when: tdagent_plugins is defined or tdagent_plugins_versions is defined
 
 - name: set INIT status (SysV style)
   shell: update-rc.d td-agent defaults
