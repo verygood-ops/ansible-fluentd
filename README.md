@@ -2,9 +2,7 @@
 Ansible Role: fluentd
 ============
 
-
-[![Circle CI](https://circleci.com/gh/William-Yeh/ansible-fluentd.svg?style=shield)](https://circleci.com/gh/William-Yeh/ansible-fluentd) [![Build Status](https://travis-ci.org/William-Yeh/ansible-fluentd.svg?branch=master)](https://travis-ci.org/William-Yeh/ansible-fluentd)
-
+[![Circle CI](https://circleci.com/gh/verygood-ops/ansible-fluentd.svg?style=svg)](https://circleci.com/gh/verygood-ops/ansible-fluentd)
 
 ## Summary
 
@@ -166,4 +164,3 @@ None.
 ## License
 
 Licensed under the MIT License. See the [LICENSE file](LICENSE) for details.
-
