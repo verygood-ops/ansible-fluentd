@@ -12,7 +12,7 @@
 
   # using xenial since we don't have package for focal
 - name: add td-agent repository
-  apt_repository: repo='deb http://packages.treasuredata.com/2.5/ubuntu/xenial/ xenial contrib' state=present
+  apt_repository: repo='deb http://packages.treasuredata.com/4/ubuntu/focal/ focal contrib' state=present
 
 - name: install td-agent
   apt: name=td-agent  update_cache=yes  state=present force=yes
