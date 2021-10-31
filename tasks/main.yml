@@ -18,6 +18,7 @@
 
 - name: delegate to APT system for installation
   include: use-apt.yml
+  tags: fluentd_install
   when: ansible_pkg_mgr == "apt"
 
 - name: mkdir for conf.d
