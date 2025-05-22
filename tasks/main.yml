@@ -21,6 +21,19 @@
   tags: fluentd_install
   when: ansible_pkg_mgr == "apt"
 
+- name: Ensure td-agent group exists
+  group:
+    name: td-agent
+    state: present
+
+- name: Ensure td-agent user exists
+  user:
+    name: td-agent
+    group: td-agent
+    system: yes
+    shell: /usr/sbin/nologin
+    create_home: no
+
 - name: mkdir for conf.d
   file:
     path: "{{item}}"
