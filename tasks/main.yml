@@ -14,10 +14,10 @@
   when: tdagent_do_cleanup_old
 
 - name: set role variables, if necessary
-  include: set-role-variables.yml
+  include_tasks: set-role-variables.yml
 
 - name: delegate to APT system for installation
-  include: use-apt.yml
+  include_tasks: use-apt.yml
   tags: fluentd_install
   when: ansible_pkg_mgr == "apt"
 
@@ -44,7 +44,7 @@
 
 - name: copy new "td-agent.conf" verbatim from main playbook's
   copy:
-    src:  "{{ playbook_dir }}/{{ tdagent_conf_copy }}"
+    src: "{{ playbook_dir }}/{{ tdagent_conf_copy }}"
     dest: /etc/td-agent/td-agent.conf
     owner: td-agent
     group: td-agent
@@ -52,7 +52,7 @@
 
 - name: copy (from template) new "td-agent.conf" from main playbook's
   template:
-    src:  "{{ playbook_dir }}/{{ tdagent_conf_template }}"
+    src: "{{ playbook_dir }}/{{ tdagent_conf_template }}"
     dest: /etc/td-agent/td-agent.conf
     owner: td-agent
     group: td-agent
@@ -60,11 +60,11 @@
 
 - name: copy other config files from playbook's, if any
   template:
-    src:  "{{ playbook_dir }}/{{ item.value.src }}"
+    src: "{{ playbook_dir }}/{{ item.value.src }}"
     dest: "/etc/td-agent/conf.d/{{ item.value.dest }}"
     owner: td-agent
     group: td-agent
-  with_dict: '{{ tdagent_conf_others | default({}) }}'
+  with_dict: "{{ tdagent_conf_others | default({}) }}"
 
 - name: copy td-restart scripts
   template: src={{ item }}.sh.j2 dest=/bin/{{ item }}.sh owner=root group=root mode=0744
