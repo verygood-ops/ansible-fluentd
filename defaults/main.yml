@@ -1,6 +1,3 @@
 ---
-
-tdagent_major_version: 4
-
 # cleanup old plugins and configs
-tdagent_do_cleanup_old: yes
+fluentd_do_cleanup_old: yes

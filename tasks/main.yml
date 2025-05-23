@@ -2,34 +2,33 @@
 # file: tasks/main.yml
 # Top-level installer for Fluentd.
 #
-# @see http://docs.treasuredata.com/articles/td-agent
+# @see http://docs.treasuredata.com/articles/fluentd
 #
 - name: cleanup old configs and plugins
   file:
     state: absent
     path: "{{ item }}/"
   with_items:
-    - /etc/td-agent/conf.d
-    - /etc/td-agent/plugin
-  when: tdagent_do_cleanup_old
+    - /etc/fluent/conf.d
+    - /etc/fluent/plugin
+  when: fluentd_do_cleanup_old
 
-- name: set role variables, if necessary
-  include_tasks: set-role-variables.yml
-
-- name: delegate to APT system for installation
-  include_tasks: use-apt.yml
+- name: Install fluentd using TreasureData script
+  shell: curl -fsSL https://toolbelt.treasuredata.com/sh/install-ubuntu-noble-fluent-package5-lts.sh | sh
+  args:
+    executable: /bin/bash
   tags: fluentd_install
   when: ansible_pkg_mgr == "apt"
 
-- name: Ensure td-agent group exists
+- name: Ensure fluentd group exists
   group:
-    name: td-agent
+    name: fluentd
     state: present
 
-- name: Ensure td-agent user exists
+- name: Ensure fluentd user exists
   user:
-    name: td-agent
-    group: td-agent
+    name: fluentd
+    group: fluentd
     system: yes
     shell: /usr/sbin/nologin
     create_home: no
@@ -38,82 +37,73 @@
   file:
     path: "{{item}}"
     state: directory
-    owner: td-agent
-    group: td-agent
+    owner: fluentd
+    group: fluentd
   with_items:
-    - /etc/td-agent/conf.d
-    - /etc/td-agent/plugin
+    - /etc/fluent/conf.d
+    - /etc/fluent/plugin
 
-- name: rename default td-agent.conf
-  command: creates="/etc/td-agent/td-agent.conf.bak" mv /etc/td-agent/td-agent.conf /etc/td-agent/td-agent.conf.bak
+- name: rename default fluentd.conf
+  command: creates="/etc/fluent/fluentd.conf.bak" mv /etc/fluent/fluentd.conf /etc/fluent/fluentd.conf.bak
 
-- name: copy new td-agent.conf from role's default
+- name: copy new fluentd.conf from role's default
   copy:
-    src: ../files/td-agent.conf
-    dest: /etc/td-agent/td-agent.conf
-    owner: td-agent
-    group: td-agent
-  when: tdagent_conf_copy is not defined and tdagent_conf_template is not defined
+    src: ../files/fluentd.conf
+    dest: /etc/fluent/fluentd.conf
+    owner: fluentd
+    group: fluentd
+  when: fluentd_conf_copy is not defined and fluentd_conf_template is not defined
 
-- name: copy new "td-agent.conf" verbatim from main playbook's
+- name: copy new "fluentd.conf" verbatim from main playbook's
   copy:
     src: "{{ playbook_dir }}/{{ tdagent_conf_copy }}"
-    dest: /etc/td-agent/td-agent.conf
-    owner: td-agent
-    group: td-agent
-  when: tdagent_conf_copy is defined
+    dest: /etc/fluent/fluentd.conf
+    owner: fluentd
+    group: fluentd
+  when: fluentd_conf_copy is defined
 
-- name: copy (from template) new "td-agent.conf" from main playbook's
+- name: copy (from template) new "fluentd.conf" from main playbook's
   template:
     src: "{{ playbook_dir }}/{{ tdagent_conf_template }}"
-    dest: /etc/td-agent/td-agent.conf
-    owner: td-agent
-    group: td-agent
-  when: tdagent_conf_template is defined
+    dest: /etc/fluent/fluentd.conf
+    owner: fluentd
+    group: fluentd
+  when: fluentd_conf_template is defined
 
 - name: copy other config files from playbook's, if any
   template:
     src: "{{ playbook_dir }}/{{ item.value.src }}"
-    dest: "/etc/td-agent/conf.d/{{ item.value.dest }}"
-    owner: td-agent
-    group: td-agent
-  with_dict: "{{ tdagent_conf_others | default({}) }}"
+    dest: "/etc/fluent/conf.d/{{ item.value.dest }}"
+    owner: fluentd
+    group: fluentd
+  with_dict: "{{ fluentd_conf_others | default({}) }}"
 
 - name: copy td-restart scripts
   template: src={{ item }}.sh.j2 dest=/bin/{{ item }}.sh owner=root group=root mode=0744
   with_items:
-    - td-start
-    - td-stop
+    - fluentd-start
+    - fluentd-stop
 
 - name: log rotation
-  template: src=logrotate.j2 dest=/etc/logrotate.d/td-agent owner=root group=root mode=0644
+  template: src=logrotate.j2 dest=/etc/logrotate.d/fluentd owner=root group=root mode=0644
 
-# GEM installed on:
-#   /opt/td-agent/embedded/lib/ruby/gems/2.1.0/gems/
 - name: install plugins, if any
   gem:
     name: "{{ item }}"
-    executable: /opt/td-agent/bin/gem
+    executable: /opt/fluent/bin/gem
     state: latest
     user_install: no
-  with_items: "{{ tdagent_plugins | default([]) }}"
+  with_items: "{{ fluentd_plugins | default([]) }}"
 
 - name: install plugins with specified versions, if any
   gem:
     name: "{{ item.value.name }}"
-    executable: /opt/td-agent/bin/gem
+    executable: /opt/fluent/bin/gem
     state: present
     version: "{{ item.value.version }}"
     user_install: no
-  with_dict: "{{ tdagent_plugins_versions | default({}) }}"
-
-# https://app.clubhouse.io/vgs/story/8889/checksum-failed-errors-when-using-sqs-output-plugin
-# https://groups.google.com/forum/#!topic/logstash-users/PXAPD0JntyU
-- name: disable sqs checksum check if sqs plugin present
-  shell: 'sed -i "s/true,/false,/" /opt/td-agent/embedded/lib/ruby/gems/2.1.0/gems/aws-sdk-v1-*/lib/aws/sqs/config.rb'
-  with_dict: "{{ tdagent_plugins_versions | default({}) }}"
-  when: item.value.name == 'fluent-plugin-sqs'
+  with_dict: "{{ fluentd_plugins_versions | default({}) }}"
 
 - name: set INIT status and start
-  service: name=td-agent enabled=yes
-  when: tdagent_use_service|bool
+  service: name=fluentd enabled=yes
+  when: fluentd_use_service|bool

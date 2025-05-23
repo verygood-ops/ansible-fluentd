@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -e
+
+# Truncate log before start
+/usr/sbin/logrotate -f /etc/logrotate.d/fluentd
+
+# start
+service fluentd start
+sleep 5
+
+# check dup process issue
+! grep "Address already in use" /var/log/fluent/fluentd.log

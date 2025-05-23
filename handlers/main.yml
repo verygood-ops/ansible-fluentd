@@ -2,14 +2,14 @@
 # file: handlers/main.yml
 #
 
-- name: reload td-agent
-  service: name=td-agent state=reloaded
-  when: tdagent_use_service|bool
+- name: reload fluentd
+  service: name=fluentd state=reloaded
+  when: fluentd_use_service|bool
 
-- name: restart td-agent
-  service: name=td-agent state=restarted
-  when: tdagent_use_service|bool
+- name: restart fluentd
+  service: name=fluentd state=restarted
+  when: fluentd_use_service|bool
 
-- name: stop td-agent
-  service: name=td-agent state=stopped
-  when: tdagent_use_service|bool
+- name: stop fluentd
+  service: name=fluentd state=stopped
+  when: fluentd_use_service|bool
