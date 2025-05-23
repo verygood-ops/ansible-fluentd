@@ -1,3 +1,4 @@
 ---
+fluentd_use_service: yes
 # cleanup old plugins and configs
 fluentd_do_cleanup_old: yes

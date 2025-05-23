@@ -105,5 +105,8 @@
   with_dict: "{{ fluentd_plugins_versions | default({}) }}"
 
 - name: set INIT status and start
-  service: name=fluentd enabled=yes
-  when: fluentd_use_service|bool
+  service:
+    name: fluentd
+    state: started
+    enabled: true
+  when: fluentd_use_service | bool
