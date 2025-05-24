@@ -78,11 +78,11 @@
     group: fluentd
   with_dict: "{{ fluentd_conf_others | default({}) }}"
 
-- name: copy td-restart scripts
+- name: copy fluent-restart scripts
   template: src={{ item }}.sh.j2 dest=/bin/{{ item }}.sh owner=root group=root mode=0744
   with_items:
-    - fluentd-start
-    - fluentd-stop
+    - fluent-start
+    - fluent-stop
 
 - name: log rotation
   template: src=logrotate.j2 dest=/etc/logrotate.d/fluentd owner=root group=root mode=0644
