@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 set -e
 
-# stop
-service fluent stop
+# Stop the service gracefully
+service fluentd stop
 sleep 5
 
-# make sure it stopped
-for try in `seq 1 3`;
-do
-  ps aux | grep fluent | cut -d' ' -f2 | xargs -r kill -9
-  sleep 1
+# Force kill remaining fluentd processes (if any)
+for try in $(seq 1 3); do
+  pids=$(pgrep -f fluentd)
+  if [[ -n "$pids" ]]; then
+    echo "Killing leftover fluentd processes: $pids"
+    kill -9 $pids
+    sleep 1
+  else
+    break
+  fi
 done
