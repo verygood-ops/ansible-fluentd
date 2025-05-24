@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+
+# stop
+service fluent stop
+sleep 5
+
+# make sure it stopped
+for try in `seq 1 3`;
+do
+  ps aux | grep fluent | cut -d' ' -f2 | xargs -r kill -9
+  sleep 1
+done
